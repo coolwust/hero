@@ -23,8 +23,8 @@ typings         := typings
 typings_dir     := typings
 typings_config  := typings.json
 
-systemjs_config := systemjs.config.js
-systemjs_link   := $(public_dir)/$(systemjs_config)
+systemjs_config := systemjs.json
+systemjs_js     := $(public_dir)/systemjs.config.js
 
 
 ifeq ($(dev_mode),true)
@@ -76,7 +76,7 @@ test: $(app_js_dist_files)
 
 .PNONY: run clean
 
-run: $(npm_dir) $(npm_link) $(systemjs_link) ui run_server
+run: $(npm_dir) $(npm_link) $(systemjs_js) ui run_server
 
 $(public_dir):
 	mkdir -p $@
@@ -90,8 +90,8 @@ $(npm_dir): $(npm_config)
 $(typings_dir): $(typings_config)
 	$(typings) install
 
-$(systemjs_link): | $(public_dir)
-	ln -sf $(abspath $(systemjs_config)) $@
+$(systemjs_js): $(systemjs_config) | $(public_dir)
+	printf 'System.config(%s)' "$$(cat $(systemjs_config))" >$@
 
 clean: clean_server clean_ui clean_app
 	rm -rf $(npm_link) $(npm_dir)
