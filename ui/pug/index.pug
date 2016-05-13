@@ -1,0 +1,15 @@
+- var public = '/static'
+- var css = public+'/css'
+- var npm = public+'/node_modules'
+doctype html
+html(lang='en')
+  head
+    meta(charset='UTF-8')
+    script(src=npm+'/es6-shim/es6-shim.min.js')
+    script(src=npm+'/zone.js/dist/zone.js')
+    script(src=npm+'/reflect-metadata/Reflect.js')
+    script(src=npm+'/systemjs/dist/system.src.js')
+    script(src=public+'/systemjs.config.js')
+    script System.import('app/foo');
+  body
+    app-foo Loading
