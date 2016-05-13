@@ -76,7 +76,7 @@ test: $(app_js_dist_files)
 
 .PNONY: run clean
 
-run: $(npm_dir) $(npm_link) $(systemjs_js) ui run_server
+run: $(npm_dir) $(npm_link) $(systemjs_js) ui app ui run_server
 
 $(public_dir):
 	mkdir -p $@
@@ -133,6 +133,8 @@ $(app_dist_dir)/$(1)/js/%.js: $(app_src_dir)/$(1)/ts/%.ts $(npm_dir) $(typings_d
 endef
 
 $(foreach app,$(app_list),$(eval $(call app_rule_template,$(app))))
+
+app: $(app_js_dist_files)
 
 clean_app:
 	rm -rf $(app_dist_dir)
