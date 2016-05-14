@@ -18,6 +18,7 @@ pug             := pug
 pug_flags       := 
 
 scss            := scss
+scss_flags      := 
 
 typings         := typings
 typings_dir     := typings
@@ -58,23 +59,27 @@ ui_pug_flags       := $(pug_flags) --out $(ui_tmpl_dist_dir) --extension tmpl
 app_src_dir       := app
 app_dist_dir      := $(public_dir)/app
 
-app_js_dist_files :=
+app_list          := $(shell ls $(app_src_dir))
 
 app_tsc_flags     := $(tsc_flags) --module amd --moduleResolution node
 
-app_list          := $(shell ls $(app_src_dir))
+app_pug_flags     := $(pug_flags) --extension tmpl
+
+app_scss_flags    := $(scss_flags)
 
 define app_var_template =
-app_js_dist_files += $(addprefix $(app_dist_dir)/$(1)/js/,$(addsuffix .js, $(basename $(notdir $(wildcard $(app_src_dir)/$(1)/ts/*.ts)))))
+app_js_dist_files   += $(addprefix $(app_dist_dir)/$(1)/js/,$(addsuffix .js, $(basename $(notdir $(wildcard $(app_src_dir)/$(1)/ts/*.ts)))))
+app_tmpl_dist_files += $(addprefix $(app_dist_dir)/$(1)/tmpl/,$(addsuffix .tmpl, $(basename $(notdir $(wildcard $(app_src_dir)/$(1)/pug/*.pug)))))
+app_css_dist_files  += $(addprefix $(app_dist_dir)/$(1)/css/,$(addsuffix .css, $(basename $(notdir $(wildcard $(app_src_dir)/$(1)/scss/*.scss)))))
 endef
 
 $(foreach app,$(app_list),$(eval $(call app_var_template,$(app))))
 
 # General Rules ##############################################################
 
-test: $(app_js_dist_files)
-
 .PNONY: run clean
+
+test: $(app_js_dist_files)
 
 run: $(npm_dir) $(npm_link) $(systemjs_js) ui app ui run_server
 
@@ -96,6 +101,7 @@ $(systemjs_js): $(systemjs_config) | $(public_dir)
 clean: clean_server clean_ui clean_app
 	rm -rf $(npm_link) $(npm_dir)
 	rm -rf $(typings_dir)
+	rm -rf $(www_dir)
 
 # Server Rules ###############################################################
 
@@ -130,11 +136,20 @@ clean_ui:
 define app_rule_template =
 $(app_dist_dir)/$(1)/js/%.js: $(app_src_dir)/$(1)/ts/%.ts $(npm_dir) $(typings_dir)
 	$(tsc) $(app_tsc_flags) --outDir $$(dir $$@) $$<
+
+$(app_dist_dir)/$(1)/tmpl/%.tmpl: $(app_src_dir)/$(1)/pug/%.pug
+	$(pug) $(app_pug_flags) --out $$(dir $$@) $$<
+
+$(app_dist_dir)/$(1)/css/%.css: $(app_src_dir)/$(1)/scss/%.scss | $(app_dist_dir)/$(1)/css
+	$(scss) $(app_scss_flags) $$< $$@
+
+$(app_dist_dir)/$(1)/css:
+	mkdir -p $$@
 endef
 
 $(foreach app,$(app_list),$(eval $(call app_rule_template,$(app))))
 
-app: $(app_js_dist_files)
+app: $(app_js_dist_files) $(app_tmpl_dist_files) $(app_css_dist_files)
 
 clean_app:
 	rm -rf $(app_dist_dir)

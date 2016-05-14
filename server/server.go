@@ -10,5 +10,5 @@ func main() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		template.Must(template.ParseFiles("template/index.tmpl")).Execute(w, nil)
 	});
-	http.ListenAndServe(":8080", nil)
+	http.ListenAndServe(":80", nil)
 }

@@ -1,0 +1,14 @@
+h1 {{title}}
+h2 My Heroes
+ul(class='heroes')
+  li(
+    *ngFor='let hero of heroes',
+    (click)='onSelect(hero)',
+    [class.selected]='hero === selectedHero'
+  )
+    span(class='badge') {{hero.id}}
+    | {{hero.name}}
+div(*ngIf='selectedHero')
+  h2 {{selectedHero.name}} detail!
+  div id: {{selectedHero.id}}
+  input([(ngModel)]='selectedHero.name')
