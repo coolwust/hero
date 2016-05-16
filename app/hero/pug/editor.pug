@@ -1,8 +1,8 @@
-h1 {{title}}
-h2 {{hero.name}} detail!
-div
-  label id:
-  | {{hero.id}}
-div
-  label name:
-  input([(ngModel)]='hero.name', placeholder='name')
+div(*ngIf='hero')
+  h2 {{hero.name}} detail!
+  div
+    label id:
+    | {{hero.id}}
+  div
+    label name:
+    input([(ngModel)]='hero.name', placeholder='name')

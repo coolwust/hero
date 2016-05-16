@@ -1,5 +1,4 @@
-h1 {{title}}
-h2 My Heroes
+h2 Hero List
 ul(class='heroes')
   li(
     *ngFor='let hero of heroes',
@@ -8,7 +7,4 @@ ul(class='heroes')
   )
     span(class='badge') {{hero.id}}
     | {{hero.name}}
-div(*ngIf='selectedHero')
-  h2 {{selectedHero.name}} detail!
-  div id: {{selectedHero.id}}
-  input([(ngModel)]='selectedHero.name')
+app-hero-editor([hero]='selectedHero')

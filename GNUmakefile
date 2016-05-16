@@ -12,7 +12,7 @@ npm_link        := $(public_dir)/node_modules
 npm_config      := package.json
 
 tsc             := tsc
-tsc_flags       := --target ES5 --experimentalDecorators
+tsc_flags       := --target ES5 --experimentalDecorators --emitDecoratorMetadata
 
 pug             := pug
 pug_flags       := 

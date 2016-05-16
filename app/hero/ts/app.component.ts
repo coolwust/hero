@@ -1,34 +1,31 @@
 /// <reference path="../../../typings/browser.d.ts" />
-import { Component } from '@angular/core';
-
-let heroes: Hero[] = [
-  'Mr. Nice',
-  'Narco',
-  'Bombasto',
-  'Celeritas',
-  'Magneta',
-  'RubberMan',
-  'Dynama',
-  'Dr IQ',
-  'Magma',
-  'Tornado'
-].map((name, i) => ({id: i, name: name}));
-
-export class Hero {
-  id: number;
-  name: string;
-}
+import { Component }         from '@angular/core';
+import { RouteConfig 
+       , ROUTER_DIRECTIVES
+       , ROUTER_PROVIDERS  } from '@angular/router-deprecated';
+import { HeroService }       from './hero.service';
+import { ListComponent }     from './list.component';
+import { TopComponent }      from './top.component';
 
 @Component({
-  selector: 'app-hero',
-  templateUrl: '/static/app/hero/tmpl/heroes.tmpl',
-  styleUrls: ['static/app/hero/css/main.css']
+  selector:    'app-hero',
+  templateUrl: '/static/app/hero/tmpl/app.tmpl',
+  directives:  [ROUTER_DIRECTIVES],
+  providers:   [ROUTER_PROVIDERS, HeroService]
 })
+@RouteConfig([
+  {
+    path:      '/list',
+    name:      'List',
+    component: ListComponent
+  },
+  {
+    path:      '/top',
+    name:      'Top',
+    component: TopComponent,
+    useAsDefault: true
+  }
+])
 export class AppComponent {
   title = 'Tour of Heros';
-  heroes = heroes;
-  selectedHero: Hero;
-  onSelect(hero: Hero) {
-    this.selectedHero = hero;
-  }
 }
